@@ -1,0 +1,23 @@
+﻿@model IEnumerable<_300910377_KAUR__300916412_YANG__Lab2.Models.Movie>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="movies">
+    @if (Model == null || Model.Count() == 0)
+    {
+        <p>No Movies Yet!</p>
+    }
+    else
+    {
+        <ul>
+            @foreach (var item in Model)
+            {
+                <li>
+                    <p> <a asp-controller="PlayMovie" asp-action="Index" asp-route-id="@item.MovieId">@Html.DisplayFor(modelItem => item.MovieName)</a></p>
+                    <p>@Html.DisplayFor(modelItem => item.Description)</p>
+                </li>
+            }
+        </ul>
+    }
+</div>

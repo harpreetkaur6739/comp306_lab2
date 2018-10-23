@@ -1,0 +1,12 @@
+﻿@model _300910377_KAUR__300916412_YANG__Lab2.Models.PlayMovie
+@{
+    ViewData["Title"] = "PlayMovie";
+    ViewData["BasePath"] = "~/movies/";
+}
+
+<h2>PlayMovie</h2>
+
+<div id="Container">
+    <video id="videoPlayer" src="@Url.Content( ViewData["BasePath"]+ Model.movie.FileName)" height="400" width="700" controls ></video>
+</div>
+

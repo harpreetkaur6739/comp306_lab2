@@ -10,7 +10,7 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Home()
         {
             return View();
         }
