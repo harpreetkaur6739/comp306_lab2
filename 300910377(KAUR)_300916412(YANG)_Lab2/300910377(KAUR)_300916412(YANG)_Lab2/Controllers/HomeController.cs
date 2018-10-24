@@ -5,14 +5,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using _300910377_KAUR__300916412_YANG__Lab2.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Home()
+        private readonly _300910377_KAUR__300916412_YANG__Lab2Context _context;
+
+        public HomeController(_300910377_KAUR__300916412_YANG__Lab2Context context)
         {
-            return View();
+            _context = context;
+        }
+
+        public async Task<IActionResult> Home()
+        {
+            return View(await _context.Movie.ToListAsync());
         }
 
         public IActionResult About()

@@ -14,10 +14,12 @@
             @foreach (var item in Model)
             {
                 <li>
-                    <p> <a asp-controller="PlayMovie" asp-action="Index" asp-route-id="@item.MovieId">@Html.DisplayFor(modelItem => item.MovieName)</a></p>
+                    <p> <a asp-controller="Movies" asp-action="Details" asp-route-id="@item.MovieId">@Html.DisplayFor(modelItem => item.MovieName)</a></p>
                     <p>@Html.DisplayFor(modelItem => item.Description)</p>
                 </li>
             }
         </ul>
     }
 </div>
+
+
