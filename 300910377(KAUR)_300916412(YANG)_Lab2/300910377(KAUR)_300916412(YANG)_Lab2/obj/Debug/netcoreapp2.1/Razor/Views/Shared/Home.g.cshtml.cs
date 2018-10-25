@@ -89,7 +89,7 @@ using _300910377_KAUR__300916412_YANG__Lab2.Models;
             WriteLiteral("                <li>\r\n                    <p> ");
             EndContext();
             BeginContext(364, 126, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "8dafd67cd7bb40afa5e4fa97d9cf92f8", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "84edf798114c457bb82bc58611401687", async() => {
                 BeginContext(442, 44, false);
 #line 17 "E:\FW2018 - 2019\COMP 306\Assignment\A2\Team Version\comp306_lab2\300910377(KAUR)_300916412(YANG)_Lab2\300910377(KAUR)_300916412(YANG)_Lab2\Views\Shared\Home.cshtml"
                                                                                                 Write(Html.DisplayFor(modelItem => item.MovieName));
