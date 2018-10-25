@@ -14,6 +14,7 @@ using Amazon.S3.Transfer;
 using Microsoft.Extensions.Configuration;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.Runtime;
+using Amazon.S3.Model;
 
 namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
 {
@@ -26,14 +27,30 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
         private static string bucketName;
         private IAmazonS3 s3Client;
 
-        private string SUCCESS_UPLOAD = "Movie has been uploaded successfully!";
+        private readonly string downloadLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),"Downloads");
 
-        private string FAILED_UPLOAD = "Sorry, there was an error uploading your movie. Please try again!";
+        private readonly string SUCCESS_UPLOAD = "Movie has been uploaded successfully!";
+
+        private readonly string FAILED_UPLOAD = "Sorry, there was an error uploading your movie. Please try again!";
 
         public MoviesController(_300910377_KAUR__300916412_YANG__Lab2Context context, IConfiguration conf)
         {
             _context = context;
-            configuration = conf;
+           
+            bucketName = conf.GetSection("AWS").GetSection("BucketName").Value;
+
+            var awsOptions = conf.GetAWSOptions();
+            var profileName = awsOptions.Profile;
+
+            CredentialProfile credentialProfile;
+            AWSCredentials aWSCredentials;
+            CredentialProfileStoreChain chain = new CredentialProfileStoreChain();
+
+            chain.TryGetAWSCredentials(profileName, out aWSCredentials);
+            chain.TryGetProfile(profileName, out credentialProfile);
+
+
+            s3Client = new AmazonS3Client(aWSCredentials, awsOptions.Region);
         }
 
         // GET: Movies
@@ -75,11 +92,15 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
         {
             if (ModelState.IsValid)
             {
-                string uploadFile = UploadMovie(FileName);
+                movie.FileName = FileName.FileName;
+                _context.Add(movie);
+                await _context.SaveChangesAsync();
+                string fileS3Name = movie.MovieId +"_"+ movie.FileName;
+                string uploadFile = UploadMovie(FileName, fileS3Name);
                 if (uploadFile != null)
                 {
-                    movie.FileName = uploadFile; //Get name of the file from uploaded file
-                    _context.Add(movie);
+                    movie.FileS3Name = uploadFile; //Get name of the file from uploaded file
+                    _context.Update(movie);
                     await _context.SaveChangesAsync();
 
                     ViewData["Message"] = SUCCESS_UPLOAD;
@@ -93,6 +114,24 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
 
             }
             return View(movie);
+        }
+
+        // GET: Movies/Download/5
+        public async Task<IActionResult> Download(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var movie = await _context.Movie.FindAsync(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            await DownloadMovie(movie.FileS3Name, movie.FileName);
+            return View();
         }
 
         // GET: Movies/Edit/5
@@ -180,44 +219,39 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
             return _context.Movie.Any(e => e.MovieId == id);
         }
 
-        private string UploadMovie(IFormFile file)
+        private string UploadMovie(IFormFile file, string fileS3Name)
         {
-
-            var fileName = Path.Combine(file.FileName, "_", DateTime.Now.ToString());
-            Stream st = file.OpenReadStream();
-
-            var awsOptions = configuration.GetAWSOptions();
-            var profileName = awsOptions.Profile;
-            bucketName = configuration.GetSection("AWS").GetSection("BucketName").Value;
-
-            CredentialProfile credentialProfile;
-            AWSCredentials aWSCredentials;
-            CredentialProfileStoreChain chain = new CredentialProfileStoreChain();
-
-            chain.TryGetAWSCredentials(profileName, out aWSCredentials);
-            chain.TryGetProfile(profileName, out credentialProfile);
-
-
-            s3Client = new AmazonS3Client(aWSCredentials, awsOptions.Region);
+            Stream st = file.OpenReadStream();          
 
             TransferUtility fileTransferUtility = new TransferUtility(s3Client);
             TransferUtilityUploadRequest request = new TransferUtilityUploadRequest
             {
                 BucketName = bucketName,
-                Key = fileName,
+                Key = fileS3Name,
                 InputStream = st
             };
-
 
             if (file.Length > 0)
             {
 
                 fileTransferUtility.Upload(request);
 
-                return fileName;
+                return fileS3Name;
             }
 
             return null;
+        }
+
+        private async Task DownloadMovie(string fileS3Name, string fileName) {
+            try
+            {
+                var pathAndFileName = downloadLocation + "\\" + fileName;
+                TransferUtility utility = new TransferUtility(s3Client);
+                utility.Download(pathAndFileName, bucketName, fileS3Name);
+            }
+            catch (Exception ex) {
+                throw;
+            }
         }
     }
 }

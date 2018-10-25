@@ -1,0 +1,1 @@
+﻿alter table movie add fileS3Name varchar(200);

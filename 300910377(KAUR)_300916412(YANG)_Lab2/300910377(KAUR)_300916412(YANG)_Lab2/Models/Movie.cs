@@ -19,6 +19,8 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Models
 
         public string Description { get; set; }
 
+        public string FileS3Name { get; set; }
+
         public bool Empty
         {
             get
@@ -26,7 +28,8 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Models
                 return (MovieId == 0 &&
                         string.IsNullOrWhiteSpace(MovieName) &&
                         string.IsNullOrWhiteSpace(FileName) &&
-                        string.IsNullOrWhiteSpace(Description));
+                        string.IsNullOrWhiteSpace(Description) &&
+                        string.IsNullOrWhiteSpace(FileS3Name));
             }
         }
 
