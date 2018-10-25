@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using _300910377_KAUR__300916412_YANG__Lab2.Models;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Amazon.S3;
 
 namespace _300910377_KAUR__300916412_YANG__Lab2
 {
@@ -41,12 +42,16 @@ namespace _300910377_KAUR__300916412_YANG__Lab2
                     options.UseSqlServer(Configuration.GetConnectionString("_300910377_KAUR__300916412_YANG__Lab2Context")));
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton(Configuration);
 
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
                 options.IdleTimeout = TimeSpan.FromSeconds(600);
             });
+
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonS3>();
 
 
         }
@@ -75,6 +80,9 @@ namespace _300910377_KAUR__300916412_YANG__Lab2
                     name: "default",
                     template: "{controller=Home}/{action=Home}/{id?}");
             });
+
+
+
         }
     }
 }
