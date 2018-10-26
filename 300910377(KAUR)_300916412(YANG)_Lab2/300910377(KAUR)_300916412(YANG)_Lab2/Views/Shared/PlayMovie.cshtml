@@ -5,6 +5,7 @@
     ViewData["Title"] = "PlayMovie";
     var movie = Model.movie;
     var comment = Model.comment;
+    var sessionToken = @HttpContextAccessor.HttpContext.Session.GetInt32("token");
 }
 
 <h2>Movie</h2>
@@ -40,7 +41,7 @@
     </div>
 
     <div id="comments">
-        @if (@HttpContextAccessor.HttpContext.Session.GetString("token") != null)
+        @if (sessionToken != null)
         {
             <div id="addcomment">
                 <form asp-action="Create" asp-controller="Comments">
@@ -64,14 +65,19 @@
         }
         else
         {
-            <ul>
+            <div>
                 @foreach (var item in comment)
                 {
-                    <li>
-                        <p>@Html.DisplayFor(modelItem => item.Content)</p>
-                    </li>
+                <div>
+                    <p>@Html.DisplayFor(modelItem => item.Content)</p>
+                    @if (sessionToken != null && item.UserId.Equals((Int32)sessionToken))
+                    {
+                        <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.CommentId">Edit</a>
+                        <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
+                    }
+                </div>
                 }
-            </ul>
+            </div>
         }
     </div>
 </div>

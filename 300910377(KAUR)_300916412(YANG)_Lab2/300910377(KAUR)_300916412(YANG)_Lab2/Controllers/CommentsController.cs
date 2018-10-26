@@ -99,8 +99,9 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CommentId,Content,Rating")] Comment comment)
+        public async Task<IActionResult> Edit(int id, [Bind("CommentId,Content,Rating,UserId")] Comment comment)
         {
+            
             if (id != comment.CommentId)
             {
                 return NotFound();
@@ -112,6 +113,9 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                 {
                     _context.Update(comment);
                     await _context.SaveChangesAsync();
+
+                    var movieComment = _context.MovieComment.SingleOrDefault(mc => mc.CommentId == comment.CommentId);
+                    return RedirectToAction("Index", "PlayMovie", new { id = movieComment.MovieId });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +128,7 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+               
             }
             return View(comment);
         }
@@ -153,9 +157,16 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var comment = await _context.Comment.FindAsync(id);
+            var moviecomment = _context.MovieComment.SingleOrDefault(mc => mc.CommentId ==comment.CommentId );
+
+            int movieId = moviecomment.MovieId;
+            _context.MovieComment.Remove(moviecomment);
+            await _context.SaveChangesAsync();
+
             _context.Comment.Remove(comment);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction("Index", "PlayMovie", new { id = movieId });
         }
 
         private bool CommentExists(int id)
