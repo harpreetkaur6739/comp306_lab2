@@ -1,5 +1,5 @@
+create database moviedb;
 use moviedb;
-
 create table users(
 	userId int primary key identity(1,1),
 	userName varchar(50) not null,
@@ -11,13 +11,16 @@ create table movie(
 	movieId int primary key identity(1,1),
 	movieName varchar(100) not null,
 	fileName varchar(100) not null,
-	description varchar(1000)
+	description varchar(1000),
+	fileS3Name varchar(200)
 );
 
 create table comment(
 	commentId int primary key identity(1,1),
 	content varchar(1000),
-	rating int
+	rating int,
+	userId int,
+	foreign key(userId) references users(userId)
 );
 
 create table usermovie(
