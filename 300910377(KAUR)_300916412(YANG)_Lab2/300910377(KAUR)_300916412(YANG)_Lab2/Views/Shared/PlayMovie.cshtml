@@ -24,7 +24,7 @@
             <dd>
                 @Html.DisplayFor(model => movie.MovieName)
             </dd>
-          
+
             <dt>
                 @Html.DisplayNameFor(model => model.movie.Description)
             </dt>
@@ -36,29 +36,9 @@
     <div>
         <a asp-controller="Movies" asp-action="Download" asp-route-id="@movie.MovieId">Download</a>
     </div>
-    <div>
-        <a asp-controller="Home" asp-action="Home">Back to List</a>
-    </div>
-
+    <br /><br />
+    <h4>Comments</h4>
     <div id="comments">
-        @if (sessionToken != null)
-        {
-            <div id="addcomment">
-                <form asp-action="Create" asp-controller="Comments">
-
-                    <input type="hidden" name="movieId" value="@movie.MovieId" />
-                    <textarea cols="100" rows="3" name="content" required></textarea>
-                    
-                    <input type="submit" value="Add Comment" class="btn btn-default" />
-                </form>
-            </div>
-        }
-        else
-        {
-            <p><a asp-action="Login" asp-controller="Users">Login</a> now to add a comment</p>
-        }
-
-
         @if (comment == null || comment.Count() == 0)
         {
             <p>No Comments Yet!</p>
@@ -68,17 +48,39 @@
             <div>
                 @foreach (var item in comment)
                 {
-                <div>
-                    <p>@Html.DisplayFor(modelItem => item.Content)</p>
-                    @if (sessionToken != null && item.UserId.Equals((Int32)sessionToken))
-                    {
-                        <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.CommentId">Edit</a>
-                        <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
-                    }
-                </div>
+                    <div>
+                        <p style="font-style:italic">"@Html.DisplayFor(modelItem => item.Content)"</p>
+                        @if (sessionToken != null && item.UserId.Equals((Int32)sessionToken))
+                        {
+                            <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.CommentId">Edit</a>
+                            <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
+                        }
+                    </div>
                 }
             </div>
         }
+        <br /><br />
+
+        @if (sessionToken != null)
+        {
+            <div>
+                <form asp-action="Create" asp-controller="Comments">
+
+                    <input type="hidden" name="movieId" value="@movie.MovieId" />
+                    <textarea cols="100" rows="3" name="content" required></textarea>
+
+                    <input type="submit" value="Add Comment" class="btn btn-default" />
+                </form>
+            </div>
+        }
+        else
+        {
+            <p><a asp-action="Login" asp-controller="Users">Login</a> now to add a comment</p>
+        }
+    </div>
+    <br /><br />
+    <div>
+        <a asp-controller="Home" asp-action="Home">Back to List</a>
     </div>
 </div>
 

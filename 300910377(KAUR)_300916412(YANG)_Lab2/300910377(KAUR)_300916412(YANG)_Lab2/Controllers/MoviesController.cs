@@ -124,7 +124,7 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                         await _context.SaveChangesAsync();
 
                         ViewData["Message"] = SUCCESS_UPLOAD;
-                        return RedirectToAction(nameof(Index));
+                        return RedirectToAction(nameof(MyMovies));//will be redirect to MyMovies pages
                     }
                     else
                     {
