@@ -6,6 +6,7 @@
     var movie = Model.movie;
     var comment = Model.userComments;
     var sessionToken = @HttpContextAccessor.HttpContext.Session.GetInt32("token");
+    var userrole = @HttpContextAccessor.HttpContext.Session.GetString("urole");
 }
 
 <div id="Container" class="body-content">
@@ -73,6 +74,10 @@
                                         @if (sessionToken != null && item.UserId.Equals((Int32)sessionToken))
                                         {
                                             <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.CommentId">Edit</a>
+                                            <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
+                                        }
+                                        else if (userrole != null && userrole.Equals("admin"))
+                                        {
                                             <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
                                         }
                                     </div>
