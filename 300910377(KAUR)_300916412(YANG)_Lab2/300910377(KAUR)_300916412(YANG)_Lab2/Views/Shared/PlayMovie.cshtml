@@ -18,75 +18,75 @@
             @Html.DisplayFor(model => movie.Description)
         </dl>
     </div>
-    <div>
-        <a asp-controller="Movies" asp-action="Download" asp-route-id="@movie.MovieId">Download</a>
-    </div>
-    <hr />
-
-    <h4>Comments</h4>
-
     @if (sessionToken != null)
     {
-        <div >
-            <form asp-action="Create" asp-controller="Comments">
-
-                <input type="hidden" name="movieId" value="@movie.MovieId" />
-                <div >
-                    <textarea class="input-lg" cols="50" rows="1" name="content" required style="border-color:#ccc;"></textarea>
-                    <input type="submit" value="Add Comment" class="btn btn-default" />
-                </div>
-                    
-                
-            </form>
+        <div>
+            <a asp-controller="Movies" asp-action="Download" asp-route-id="@movie.MovieId">Download</a>
         </div>
     }
-    else
-    {
-        <p><a asp-action="Login" asp-controller="Users">Login</a> now to add a comment</p>
-    }
+        <hr />
 
-    <div id="comments">
-        @if (comment == null || comment.Count() == 0)
+        <h4>Comments</h4>
+
+        @if (sessionToken != null)
         {
-            <p>No Comments Yet!</p>
+            <div>
+                <form asp-action="Create" asp-controller="Comments">
+
+                    <input type="hidden" name="movieId" value="@movie.MovieId" />
+                    <div>
+                        <textarea class="input-lg" cols="50" rows="1" name="content" required style="border-color:#ccc;"></textarea>
+                        <input type="submit" value="Add Comment" class="btn btn-default" />
+                    </div>
+
+
+                </form>
+            </div>
         }
         else
         {
-            <div>
-                <div class="">
-                    <div class="table-condensed">
-                        @foreach (var item in comment)
-                        {
-
-                            <div class="row">
-                                <div class="col-sm-1" style="width:4%; padding-right:0px;">
-                                    <span><img src="~/images/user.png" alt="userimage" height="100%" width="100%" /></span>
-                                </div>
-                                <div class="col-lg-5">
-                                    <span>@Html.DisplayFor(modelItem => item.User)</span>
-                                    <p style="font-style:italic">"@Html.DisplayFor(modelItem => item.Content)"</p>
-                                </div>
-                                <div class="col-lg-5">
-                                    @if (sessionToken != null && item.UserId.Equals((Int32)sessionToken))
-                                    {
-                                        <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.CommentId">Edit</a>
-                                        <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
-                                    }
-                                </div>
-                            </div>
-                           
-                        }
-                    </div>
-                    </div>
-            </div>
+            <p><a asp-action="Login" asp-controller="Users">Login</a> now to add a comment</p>
         }
+
+        <div id="comments">
+            @if (comment == null || comment.Count() == 0)
+            {
+                <p>No Comments Yet!</p>
+            }
+            else
+            {
+                <div>
+                    <div class="">
+                        <div class="table-condensed">
+                            @foreach (var item in comment)
+                            {
+
+                                <div class="row">
+                                    <div class="col-sm-1" style="width:4%; padding-right:0px;">
+                                        <span><img src="~/images/user.png" alt="userimage" height="100%" width="100%" /></span>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <span>@Html.DisplayFor(modelItem => item.User)</span>
+                                        <p style="font-style:italic">"@Html.DisplayFor(modelItem => item.Content)"</p>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        @if (sessionToken != null && item.UserId.Equals((Int32)sessionToken))
+                                        {
+                                            <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.CommentId">Edit</a>
+                                            <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
+                                        }
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            <br /><br />
+
+
+        </div>
         <br /><br />
-
-
     </div>
-    <br /><br />
-    <div>
-        <a asp-controller="Home" asp-action="Home">Back to List</a>
-    </div>
-</div>
 

@@ -80,6 +80,7 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                     {
                         HttpContext.Session.SetInt32("token", userFound.UserId);
                         HttpContext.Session.SetString("user", userFound.UserName);
+                        HttpContext.Session.SetString("urole", userFound.Role);
 
                         return RedirectToAction("Home", "Home");
                     }
@@ -100,6 +101,11 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
         {
             if (ModelState.IsValid)
             {
+                Users userFound = FindUserByUserName(user.UserName);
+                if (userFound != null) {
+                    ViewData["Message"] = "UserName already exists! Choose a different username!";
+                    return View(nameof(Create));
+                }
                 user.Password = Encryption(user.Password);
                 _context.Add(user);
                 await _context.SaveChangesAsync();

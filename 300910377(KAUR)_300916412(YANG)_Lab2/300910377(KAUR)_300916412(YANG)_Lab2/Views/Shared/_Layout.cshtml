@@ -3,6 +3,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     var user = @HttpContextAccessor.HttpContext.Session.GetString("user");
+    var userRole = @HttpContextAccessor.HttpContext.Session.GetString("urole");
     }
 <html>
 <head>
@@ -39,8 +40,11 @@
                     }
                     else
                     {
+                        if (userRole != null && userRole.Equals("admin")) {
+                            <li><a asp-area="" asp-action="Index" asp-controller="Movies"> Manage Movies</a></li>
+                        }
                         <li> <a asp-area="" asp-controller="Movies" asp-action="MyMovies">My Movies</a></li>
-                        <li><a asp-area="">Welcome, @user</a></li>
+                        <li>Welcome, @user</li>
                         <li> <a asp-area="" asp-controller="Users" asp-action="Logout">Logout</a></li>
                     }
                 </ul>
