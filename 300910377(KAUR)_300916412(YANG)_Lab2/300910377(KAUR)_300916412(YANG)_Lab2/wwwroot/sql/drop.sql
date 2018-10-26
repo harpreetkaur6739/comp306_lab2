@@ -3,6 +3,12 @@ use moviedb;
 truncate table association;
 drop table association;
 
+truncate table usermovie;
+drop table usermovie;
+
+truncate table moviecomment;
+drop table moviecomment;
+
 truncate table comment;
 drop table comment;
 

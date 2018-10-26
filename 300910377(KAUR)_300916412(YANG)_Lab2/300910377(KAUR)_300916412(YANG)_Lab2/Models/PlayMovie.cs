@@ -11,7 +11,7 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Models
 
         public Movie movie { get; set; }
 
-        public Comment comment { get; set; }
+        public IEnumerable<Comment> comment { get; set; }
 
 
     }

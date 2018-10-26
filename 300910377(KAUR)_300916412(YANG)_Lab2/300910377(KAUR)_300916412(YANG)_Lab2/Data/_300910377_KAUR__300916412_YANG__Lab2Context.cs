@@ -24,6 +24,10 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Models
 
         public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.Association> Association { get; set; }
 
+        public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.UserMovie> UserMovie { get; set; }
+
+        public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.MovieComment> MovieComment { get; set; }
+
         internal void Find(Users user)
         {
             throw new NotImplementedException();

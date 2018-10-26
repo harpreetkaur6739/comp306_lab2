@@ -14,5 +14,7 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Models
         public string Content { get; set; }
 
         public int Rating { get; set; }
+
+        public int UserId { get; set; }
     }
 }

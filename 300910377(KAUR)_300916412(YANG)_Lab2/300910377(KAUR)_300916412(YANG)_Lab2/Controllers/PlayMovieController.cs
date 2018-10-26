@@ -2,17 +2,48 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using _300910377_KAUR__300916412_YANG__Lab2.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
 {
     public class PlayMovieController : Controller
     {
-        // GET: PlayMovie
-        public ActionResult Index()
+
+        private readonly _300910377_KAUR__300916412_YANG__Lab2Context _context;
+
+        public PlayMovieController(_300910377_KAUR__300916412_YANG__Lab2Context context)
         {
-            return View();
+            _context = context;
+        }
+            // GET: PlayMovie
+            public async Task<IActionResult> Index(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var movie = await _context.Movie
+                .FirstOrDefaultAsync(m => m.MovieId == id);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<Comment> comments =  _context.Comment.Where(x => _context.MovieComment.Any(m => m.CommentId == x.CommentId && m.MovieId == movie.MovieId));
+
+            PlayMovie playMovie = new PlayMovie();
+            playMovie.movie = movie;
+            if (comments != null) {
+                playMovie.comment = comments;
+            }
+
+
+            return View("PlayMovie",playMovie);
         }
 
         // GET: PlayMovie/Details/5

@@ -56,6 +56,13 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
             return View();
         }
 
+        // GET: Users/Login
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Clear();
+            return View("Login");
+        }
+
         // POST: Users/Login
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -71,8 +78,8 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                 {
                     if (userFound.Password.Equals(Encryption(user.Password)))
                     {
-                        HttpContext.Session.SetString("token", user.UserId.ToString());
-                        HttpContext.Session.SetString("user", user.UserName);
+                        HttpContext.Session.SetInt32("token", userFound.UserId);
+                        HttpContext.Session.SetString("user", userFound.UserName);
 
                         return RedirectToAction("Home", "Home");
                     }

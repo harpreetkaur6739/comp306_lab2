@@ -1,12 +1,78 @@
 ﻿@model _300910377_KAUR__300916412_YANG__Lab2.Models.PlayMovie
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "PlayMovie";
-    ViewData["BasePath"] = "~/movies/";
+    var movie = Model.movie;
+    var comment = Model.comment;
 }
 
-<h2>PlayMovie</h2>
+<h2>Movie</h2>
 
 <div id="Container">
-    <video id="videoPlayer" src="@Url.Content( ViewData["BasePath"]+ Model.movie.FileName)" height="400" width="700" controls ></video>
+    <div>
+        <h4>@Html.DisplayFor(model => model.movie.FileName)</h4>
+        <br />
+        <p>@ViewData["Message"]</p>
+        <hr />
+
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.movie.MovieName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => movie.MovieName)
+            </dd>
+          
+            <dt>
+                @Html.DisplayNameFor(model => model.movie.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => movie.Description)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-controller="Movies" asp-action="Download" asp-route-id="@movie.MovieId">Download</a>
+    </div>
+    <div>
+        <a asp-controller="Home" asp-action="Home">Back to List</a>
+    </div>
+
+    <div id="comments">
+        @if (@HttpContextAccessor.HttpContext.Session.GetString("token") != null)
+        {
+            <div id="addcomment">
+                <form asp-action="Create" asp-controller="Comments">
+
+                    <input type="hidden" name="movieId" value="@movie.MovieId" />
+                    <textarea cols="100" rows="3" name="content" required></textarea>
+                    
+                    <input type="submit" value="Add Comment" class="btn btn-default" />
+                </form>
+            </div>
+        }
+        else
+        {
+            <p><a asp-action="Login" asp-controller="Users">Login</a> now to add a comment</p>
+        }
+
+
+        @if (comment == null || comment.Count() == 0)
+        {
+            <p>No Comments Yet!</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var item in comment)
+                {
+                    <li>
+                        <p>@Html.DisplayFor(modelItem => item.Content)</p>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
 </div>
 

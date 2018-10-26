@@ -37,3 +37,19 @@ create table association(
 	foreign key(videoId) references movie(movieId),
 	foreign key(commentId) references comment(commentId)
 );
+
+create table usermovie(
+	id int primary key identity(1,1),
+	userId int,
+	movieId int,
+	foreign key(userId) references users(userId),
+	foreign key(movieId) references movie(movieId)
+);
+
+create table moviecomment(
+	id int primary key identity(1,1),
+	movieId int,
+	commentId int,	
+	foreign key(movieId) references movie(movieId),
+	foreign key(commentId) references comment(commentId)
+);

@@ -7,19 +7,15 @@ using System.Threading.Tasks;
 
 namespace _300910377_KAUR__300916412_YANG__Lab2.Models
 {
-    public class Association
+    public class MovieComment
     {
         [Key]
-        public int AssociationId { get; set; }
-
-        [ForeignKey("User")]
-        public int UserId { get; set; }
-
-        [ForeignKey("Video")]
-        public int VideoId { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Comment")]
-        
         public int CommentId { get; set; }
+
+        [ForeignKey("Movie")]
+        public int MovieId { get; set; }
     }
 }

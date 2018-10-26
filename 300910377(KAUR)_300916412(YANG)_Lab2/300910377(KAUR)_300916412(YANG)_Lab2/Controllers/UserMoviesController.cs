@@ -6,26 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using _300910377_KAUR__300916412_YANG__Lab2.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
 {
-    public class CommentsController : Controller
+    public class UserMoviesController : Controller
     {
         private readonly _300910377_KAUR__300916412_YANG__Lab2Context _context;
 
-        public CommentsController(_300910377_KAUR__300916412_YANG__Lab2Context context)
+        public UserMoviesController(_300910377_KAUR__300916412_YANG__Lab2Context context)
         {
             _context = context;
         }
 
-        // GET: Comments
+        // GET: UserMovies
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Comment.ToListAsync());
+            return View(await _context.UserMovie.ToListAsync());
         }
 
-        // GET: Comments/Details/5
+        // GET: UserMovies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,52 +32,39 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comment
-                .FirstOrDefaultAsync(m => m.CommentId == id);
-            if (comment == null)
+            var userMovie = await _context.UserMovie
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (userMovie == null)
             {
                 return NotFound();
             }
 
-            return View(comment);
+            return View(userMovie);
         }
 
-        // GET: Comments/Create
+        // GET: UserMovies/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Comments/Create
+        // POST: UserMovies/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CommentId,Content,Rating")] Comment comment, [Bind("movieId")] int movieId)
+        public async Task<IActionResult> Create([Bind("Id,UserId,MovieId")] UserMovie userMovie)
         {
             if (ModelState.IsValid)
-            {                
-                if (HttpContext.Session.GetInt32("token") != null) {
-                    
-                    int userId = (Int32)HttpContext.Session.GetInt32("token");
-                    comment.UserId = userId;
-                }
-               
-                _context.Add(comment);
+            {
+                _context.Add(userMovie);
                 await _context.SaveChangesAsync();
-
-                MovieComment movieComment = new MovieComment();
-                movieComment.CommentId = comment.CommentId;
-                movieComment.MovieId = movieId;
-                _context.MovieComment.Add(movieComment);
-                await _context.SaveChangesAsync();               
-   
-                return RedirectToAction("Index","PlayMovie",new { id = movieId });
+                return RedirectToAction(nameof(Index));
             }
-            return View(comment);
+            return View(userMovie);
         }
 
-        // GET: Comments/Edit/5
+        // GET: UserMovies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,22 +72,22 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comment.FindAsync(id);
-            if (comment == null)
+            var userMovie = await _context.UserMovie.FindAsync(id);
+            if (userMovie == null)
             {
                 return NotFound();
             }
-            return View(comment);
+            return View(userMovie);
         }
 
-        // POST: Comments/Edit/5
+        // POST: UserMovies/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CommentId,Content,Rating")] Comment comment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,MovieId")] UserMovie userMovie)
         {
-            if (id != comment.CommentId)
+            if (id != userMovie.Id)
             {
                 return NotFound();
             }
@@ -110,12 +96,12 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
             {
                 try
                 {
-                    _context.Update(comment);
+                    _context.Update(userMovie);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CommentExists(comment.CommentId))
+                    if (!UserMovieExists(userMovie.Id))
                     {
                         return NotFound();
                     }
@@ -126,10 +112,10 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(comment);
+            return View(userMovie);
         }
 
-        // GET: Comments/Delete/5
+        // GET: UserMovies/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,30 +123,30 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comment
-                .FirstOrDefaultAsync(m => m.CommentId == id);
-            if (comment == null)
+            var userMovie = await _context.UserMovie
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (userMovie == null)
             {
                 return NotFound();
             }
 
-            return View(comment);
+            return View(userMovie);
         }
 
-        // POST: Comments/Delete/5
+        // POST: UserMovies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var comment = await _context.Comment.FindAsync(id);
-            _context.Comment.Remove(comment);
+            var userMovie = await _context.UserMovie.FindAsync(id);
+            _context.UserMovie.Remove(userMovie);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CommentExists(int id)
+        private bool UserMovieExists(int id)
         {
-            return _context.Comment.Any(e => e.CommentId == id);
+            return _context.UserMovie.Any(e => e.Id == id);
         }
     }
 }

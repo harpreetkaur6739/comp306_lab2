@@ -59,6 +59,16 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
             return View(await _context.Movie.ToListAsync());
         }
 
+        // GET: Movies
+        public async Task<IActionResult> MyMovies()
+        {
+            int userId = (Int32)HttpContext.Session.GetInt32("token");
+
+            var result = _context.Movie.Where(x => _context.UserMovie.Any(m => (m.MovieId == x.MovieId && m.UserId == userId)) );
+
+            return View(result);
+        }
+
         // GET: Movies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -91,26 +101,38 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
         public async Task<IActionResult> Create([Bind("MovieId,MovieName,FileName,Description")] Movie movie, IFormFile FileName)
         {
             if (ModelState.IsValid)
-            {
-                movie.FileName = FileName.FileName;
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                string fileS3Name = movie.MovieId +"_"+ movie.FileName;
-                string uploadFile = UploadMovie(FileName, fileS3Name);
-                if (uploadFile != null)
-                {
-                    movie.FileS3Name = uploadFile; //Get name of the file from uploaded file
-                    _context.Update(movie);
-                    await _context.SaveChangesAsync();
+            {    
+                if (HttpContext.Session.GetInt32("token") != null) {
+                    int userId = (Int32)HttpContext.Session.GetInt32("token");
 
-                    ViewData["Message"] = SUCCESS_UPLOAD;
-                    return RedirectToAction(nameof(Index));
+                    movie.FileName = FileName.FileName;
+                    _context.Add(movie);
+                    await _context.SaveChangesAsync();
+                    string fileS3Name = movie.MovieId + "_" + movie.FileName;
+                    string uploadFile = UploadMovie(FileName, fileS3Name);
+                    if (uploadFile != null)
+                    {
+                        movie.FileS3Name = uploadFile; //Get name of the file from uploaded file
+                        _context.Update(movie);
+
+                        UserMovie userMovie = new UserMovie();
+                        userMovie.UserId = userId;
+                        userMovie.MovieId = movie.MovieId;                       
+
+                        _context.Add(userMovie);
+
+                        await _context.SaveChangesAsync();
+
+                        ViewData["Message"] = SUCCESS_UPLOAD;
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        ViewData["Message"] = FAILED_UPLOAD;
+                        return RedirectToAction(nameof(Create));
+                    }
                 }
-                else
-                {
-                    ViewData["Message"] = FAILED_UPLOAD;
-                    return RedirectToAction(nameof(Create));
-                }
+               
 
             }
             return View(movie);
@@ -131,7 +153,11 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
             }
 
             await DownloadMovie(movie.FileS3Name, movie.FileName);
-            return View();
+            ViewData["Message"] = "Successfully downloaded under " + downloadLocation;
+
+            PlayMovie playmovie = new PlayMovie();
+            playmovie.movie = movie;
+            return View("PlayMovie", playmovie);
         }
 
         // GET: Movies/Edit/5
