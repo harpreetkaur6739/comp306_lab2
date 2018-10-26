@@ -237,6 +237,25 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //remove all the comments related to the movie user wants to delete 
+            //and records in moviecomment table
+            var moviecomments = _context.MovieComment.Where(mc => mc.MovieId.Equals(id)).ToList();
+            foreach (var moviecomment in moviecomments)
+            {
+                var comment = await _context.Comment.FindAsync(moviecomment.CommentId);
+
+                _context.MovieComment.Remove(moviecomment);
+                await _context.SaveChangesAsync();
+
+                _context.Comment.Remove(comment);
+                await _context.SaveChangesAsync();
+            }
+
+            //remove record in usermovie table for selected movie
+            var usermovie = _context.UserMovie.FirstOrDefault(um => um.MovieId == id);
+                _context.UserMovie.Remove(usermovie);
+                await _context.SaveChangesAsync();
+
             var movie = await _context.Movie.FindAsync(id);
             _context.Movie.Remove(movie);
             await _context.SaveChangesAsync();
