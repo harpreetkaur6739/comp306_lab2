@@ -16,13 +16,9 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Models
 
         public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.Users> Users { get; set; }
 
-        public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.UserInfo> UserInfo { get; set; }
-
         public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.Movie> Movie { get; set; }
 
         public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.Comment> Comment { get; set; }
-
-        public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.Association> Association { get; set; }
 
         public DbSet<_300910377_KAUR__300916412_YANG__Lab2.Models.UserMovie> UserMovie { get; set; }
 

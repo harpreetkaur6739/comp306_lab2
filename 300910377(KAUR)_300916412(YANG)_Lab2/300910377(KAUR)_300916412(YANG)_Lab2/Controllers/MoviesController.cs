@@ -193,7 +193,7 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MovieId,MovieName,FileName,Description")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("MovieId,MovieName,FileName,Description, FileS3Name")] Movie movie)
         {
             if (id != movie.MovieId)
             {
