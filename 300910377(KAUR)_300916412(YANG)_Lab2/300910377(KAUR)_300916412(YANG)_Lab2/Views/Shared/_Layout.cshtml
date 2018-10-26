@@ -28,26 +28,32 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Home">Home</a></li>
-                   
+                </ul>
 
-                    </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    @if (user == null)
-                    {
-
+                @if (user == null)
+                {
+                    <ul class="nav navbar-nav navbar-right">
                         <li><a asp-area="" asp-controller="Users" asp-action="Login">Login</a></li>
                         <li> <a asp-area="" asp-controller="Users" asp-action="Create">Register </a></li>
-                    }
-                    else
+                    </ul>
+                }
+                else
+                {
+                    if (userRole != null && userRole.Equals("admin"))
                     {
-                        if (userRole != null && userRole.Equals("admin")) {
+                        <ul class="nav navbar-nav">
                             <li><a asp-area="" asp-action="Index" asp-controller="Movies"> Manage Movies</a></li>
-                        }
-                        <li> <a asp-area="" asp-controller="Movies" asp-action="MyMovies">My Movies</a></li>
-                        <li>Welcome, @user</li>
-                        <li> <a asp-area="" asp-controller="Users" asp-action="Logout">Logout</a></li>
+                        </ul>
                     }
-                </ul>
+                    <ul class="nav navbar-nav">
+                        <li> <a asp-area="" asp-controller="Movies" asp-action="MyMovies">My Movies</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a asp-area="">Welcome, @user</a></li>
+                        <li> <a asp-area="" asp-controller="Users" asp-action="Logout">Logout</a></li>
+                    </ul>
+                }
+                }
             </div>
         </div>
     </nav>
