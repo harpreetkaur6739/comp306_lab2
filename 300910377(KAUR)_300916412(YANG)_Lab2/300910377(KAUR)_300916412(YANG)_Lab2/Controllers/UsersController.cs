@@ -103,7 +103,9 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                 user.Password = Encryption(user.Password);
                 _context.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                ViewData["Message"] = "Registration successful! Please user your username and password to Login below.";
+                return View(nameof(Login));
             }
             return View(user);
         }
