@@ -4,40 +4,47 @@
 @{
     ViewData["Title"] = "PlayMovie";
     var movie = Model.movie;
-    var comment = Model.comment;
+    var comment = Model.userComments;
     var sessionToken = @HttpContextAccessor.HttpContext.Session.GetInt32("token");
 }
 
-<h2>Movie</h2>
-
-<div id="Container">
+<div id="Container" class="body-content">
     <div>
-        <h4>@Html.DisplayFor(model => model.movie.FileName)</h4>
-        <br />
+        <h4 class="text-capitalize">@Html.DisplayFor(model => model.movie.MovieName)</h4>
+
         <p>@ViewData["Message"]</p>
-        <hr />
 
         <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.movie.MovieName)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => movie.MovieName)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.movie.Description)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => movie.Description)
-            </dd>
+            @Html.DisplayFor(model => movie.Description)
         </dl>
     </div>
     <div>
         <a asp-controller="Movies" asp-action="Download" asp-route-id="@movie.MovieId">Download</a>
     </div>
-    <br /><br />
+    <hr />
+
     <h4>Comments</h4>
+
+    @if (sessionToken != null)
+    {
+        <div >
+            <form asp-action="Create" asp-controller="Comments">
+
+                <input type="hidden" name="movieId" value="@movie.MovieId" />
+                <div >
+                    <textarea class="input-lg" cols="50" rows="1" name="content" required style="border-color:#ccc;"></textarea>
+                    <input type="submit" value="Add Comment" class="btn btn-default" />
+                </div>
+                    
+                
+            </form>
+        </div>
+    }
+    else
+    {
+        <p><a asp-action="Login" asp-controller="Users">Login</a> now to add a comment</p>
+    }
+
     <div id="comments">
         @if (comment == null || comment.Count() == 0)
         {
@@ -46,37 +53,36 @@
         else
         {
             <div>
-                @foreach (var item in comment)
-                {
-                    <div>
-                        <p style="font-style:italic">"@Html.DisplayFor(modelItem => item.Content)"</p>
-                        @if (sessionToken != null && item.UserId.Equals((Int32)sessionToken))
+                <div class="">
+                    <div class="table-condensed">
+                        @foreach (var item in comment)
                         {
-                            <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.CommentId">Edit</a>
-                            <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
+
+                            <div class="row">
+                                <div class="col-sm-1" style="width:4%; padding-right:0px;">
+                                    <span><img src="~/images/user.png" alt="userimage" height="100%" width="100%" /></span>
+                                </div>
+                                <div class="col-lg-5">
+                                    <span>@Html.DisplayFor(modelItem => item.User)</span>
+                                    <p style="font-style:italic">"@Html.DisplayFor(modelItem => item.Content)"</p>
+                                </div>
+                                <div class="col-lg-5">
+                                    @if (sessionToken != null && item.UserId.Equals((Int32)sessionToken))
+                                    {
+                                        <a asp-controller="Comments" asp-action="Edit" asp-route-id="@item.CommentId">Edit</a>
+                                        <a asp-controller="Comments" asp-action="Delete" asp-route-id="@item.CommentId">Delete</a>
+                                    }
+                                </div>
+                            </div>
+                           
                         }
                     </div>
-                }
+                    </div>
             </div>
         }
         <br /><br />
 
-        @if (sessionToken != null)
-        {
-            <div>
-                <form asp-action="Create" asp-controller="Comments">
 
-                    <input type="hidden" name="movieId" value="@movie.MovieId" />
-                    <textarea cols="100" rows="3" name="content" required></textarea>
-
-                    <input type="submit" value="Add Comment" class="btn btn-default" />
-                </form>
-            </div>
-        }
-        else
-        {
-            <p><a asp-action="Login" asp-controller="Users">Login</a> now to add a comment</p>
-        }
     </div>
     <br /><br />
     <div>

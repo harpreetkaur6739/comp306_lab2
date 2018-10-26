@@ -34,16 +34,29 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
                 return NotFound();
             }
 
-            IEnumerable<Comment> comments =  _context.Comment.Where(x => _context.MovieComment.Any(m => m.CommentId == x.CommentId && m.MovieId == movie.MovieId));
+            // IEnumerable<Comment> comments =  _context.Comment.Where(x => _context.MovieComment.Any(m => m.CommentId == x.CommentId && m.MovieId == movie.MovieId));
 
-            PlayMovie playMovie = new PlayMovie();
-            playMovie.movie = movie;
-            if (comments != null) {
-                playMovie.comment = comments;
+            var userComments = from comment in _context.Comment
+                               join movieComment in _context.MovieComment on comment.CommentId equals movieComment.CommentId
+                               where movieComment.MovieId == movie.MovieId
+                               join users in _context.Users on comment.UserId equals users.UserId 
+                         
+                         select new UserComments
+                         {
+                             CommentId = comment.CommentId,
+                             Content = comment.Content,
+                             Rating = comment.Rating,
+                             UserId = comment.UserId,
+                             User = users.UserName
+                         };
+
+            PlayMovie playMovieView = new PlayMovie();
+            playMovieView.movie = movie;
+
+            if (userComments != null) {
+                playMovieView.userComments = userComments;
             }
-
-
-            return View("PlayMovie",playMovie);
+            return View("PlayMovie", playMovieView);
         }
 
         // GET: PlayMovie/Details/5

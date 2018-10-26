@@ -155,11 +155,20 @@ namespace _300910377_KAUR__300916412_YANG__Lab2.Controllers
             await DownloadMovie(movie.FileS3Name, movie.FileName);
             ViewData["Message"] = "Successfully downloaded under " + downloadLocation;
 
-            var comments = _context.Comment.Where(c => _context.MovieComment.Any(mc => mc.CommentId == c.CommentId && mc.MovieId == movie.MovieId));
-
+            // var comments = _context.Comment.Where(c => _context.MovieComment.Any(mc => mc.CommentId == c.CommentId && mc.MovieId == movie.MovieId));
+            var userComments = from comment in _context.Comment
+                               join users in _context.Users on comment.UserId equals users.UserId
+                               select new UserComments
+                               {
+                                   CommentId = comment.CommentId,
+                                   Content = comment.Content,
+                                   Rating = comment.Rating,
+                                   UserId = comment.UserId,
+                                   User = users.UserName
+                               };
             PlayMovie playmovie = new PlayMovie();
             playmovie.movie = movie;
-            playmovie.comment = comments;
+            playmovie.userComments = userComments;
             return View("PlayMovie", playmovie);
         }
 
